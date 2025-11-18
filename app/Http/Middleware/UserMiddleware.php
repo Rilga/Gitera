@@ -16,7 +16,7 @@ class UserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->role == 'user') {
+        if (Auth::user()->role == 'user' && Auth::user()->status == 'approved') {
             return $next($request);
         }
         return redirect()->back();

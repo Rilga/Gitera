@@ -28,11 +28,39 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if (Auth::user()->role == 'admin') {
+        $user = Auth::user();
+
+        // 1. Cek Admin
+        if ($user->role == 'admin') {
             return redirect(route('admin.dashboard'));
         }
 
-        return redirect()->intended(route('user.dashboard', absolute: false));
+        // 2. Cek User
+        if ($user->role == 'user') {
+            // Cek jika status sudah disetujui
+            if ($user->status == 'approved') {
+                return redirect()->intended(route('user.dashboard', absolute: false));
+            } else {
+                // Jika status 'pending' atau 'rejected', paksa logout
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                // Kirim pesan error spesifik berdasarkan status
+                $errorMessage = $user->status == 'pending'
+                    ? 'Akun Anda sedang menunggu verifikasi admin.'
+                    : 'Akun Anda ditolak atau diblokir.';
+
+                return redirect(route('login'))->withErrors(['email' => $errorMessage]);
+            }
+        }
+
+        // 3. Jika role tidak terdefinisi (Fallback)
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect(route('login'))->withErrors(['email' => 'Role tidak valid.']);
     }
 
     /**

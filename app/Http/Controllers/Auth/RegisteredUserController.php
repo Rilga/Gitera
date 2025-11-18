@@ -32,19 +32,27 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'nik' => ['required', 'string', 'digits:16', 'unique:'.User::class], // Validasi NIK 16 digit & unik
+            'no_hp' => ['required', 'string', 'max:15'], // Validasi No. HP
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'nik' => $request->nik,
+            'no_hp' => $request->no_hp,
             'password' => Hash::make($request->password),
+            'role' => 'user',       // Set role default ke 'user'
+            'status' => 'pending',  // Set status default ke 'pending'
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // HAPUS BARIS Auth::login($user);
+        // Kita tidak ingin user langsung login
 
-        return redirect(route('dashboard', absolute: false));
+        // Arahkan ke halaman login dengan pesan
+        return redirect(route('login'))->with('status', 'Registrasi berhasil! Silakan tunggu verifikasi admin.');
     }
 }
