@@ -10,19 +10,16 @@
             <div class="absolute inset-0 z-0">
                 <img src="{{ asset('images/asset/Login.png') }}" 
                     alt="Ilustrasi Background" 
-                    class="w-full h-full object-cover object-center opacity-40 mix-blend-multiply">
+                    class="w-full h-full object-cover object-center opacity-45 mix-blend-multiply">
                 <!-- Overlay gradient agar teks tetap terbaca jelas di atas gambar -->
-                <div class="absolute inset-0 bg-gradient-to-b from-[#1da746]/50 to-[#1da746]/20"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-[#188D3C]/80 to-[#188D3C]/30"></div>
             </div>
 
             <!-- Logo SuratKu (Pojok Kiri Atas) -->
             <div class="absolute top-8 left-8 z-20 flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 transform -rotate-12 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                </svg>
-                <span class="text-2xl font-bold tracking-wide">SuratKu</span>
+                <img src="{{ asset('images/asset/logo-white.png') }}" alt="Logo SimpelBS" class="w-10 h-10 object-contain ml-5">
+                <span class="text-2xl font-bold tracking-wide">SimpelBS</span>
             </div>
-
             <!-- Konten Teks Tengah -->
             <div class="relative z-20 mt-10">
                 <h1 class="text-5xl font-bold leading-tight mb-6 drop-shadow-lg select-none">
