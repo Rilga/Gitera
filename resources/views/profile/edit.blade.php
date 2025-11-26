@@ -22,12 +22,11 @@
                         
                         <div class="relative z-10 -mt-2">
                             <div class="w-24 h-24 mx-auto bg-white p-1 rounded-full shadow-md">
-                                <div class="w-full h-full bg-green-100 rounded-full flex items-center justify-center text-green-600 text-4xl font-bold border border-green-200">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
-                                </div>
+                                <img class="w-full h-full rounded-full object-contain border-2 border-gray-100 group-hover:border-[#00C07F] transition-all" 
+                                    src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random&color=fff" 
+                                    alt="{{ Auth::user()->name }}" />
                             </div>
                         </div>
-                        
                         <div class="mt-4">
                             <h3 class="text-xl font-bold text-gray-900">{{ Auth::user()->name }}</h3>
                             <p class="text-sm text-gray-500">{{ Auth::user()->email }}</p>

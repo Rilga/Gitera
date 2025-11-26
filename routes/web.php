@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\LayananController;
+
 use App\Http\Controllers\Admin\AdminController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,6 +28,12 @@ Route::middleware(['auth', 'userMiddleware'])->group(function (){
 
     Route::get('dashboard', [UserController::class, 'index'])->name('user.dashboard');
 
+    // Route untuk layanan pengguna
+    Route::get('dashboard/layanan', [LayananController::class, 'index'])->name('user.layanan');
+    Route::get('dashboard/layanan/kedatangan', [LayananController::class, 'kedatangan'])->name('user.layanan.kedatangan');
+    Route::get('dashboard/layanan/kelahiran', [LayananController::class, 'kelahiran'])->name('user.layanan.kelahiran');
+    Route::get('dashboard/layanan/kepindahan', [LayananController::class, 'kepindahan'])->name('user.layanan.kepindahan');
+
 });
 
 // admin routes
@@ -32,17 +42,11 @@ Route::middleware(['auth', 'adminMiddleware'])->group(function (){
     Route::get('admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 
     // Route untuk verifikasi user baru
-    Route::get('verifikasi', [AdminController::class, 'showVerificationList'])
-        ->name('verification.list');
-    Route::patch('verifikasi/{user}/approve', [AdminController::class, 'approveUser'])
-        ->name('verification.approve');
-    Route::delete('verifikasi/{user}/reject', [AdminController::class, 'rejectUser'])
-        ->name('verification.reject');
+    Route::get('verifikasi', [AdminController::class, 'showVerificationList'])->name('verification.list');
+    Route::patch('verifikasi/{user}/approve', [AdminController::class, 'approveUser'])->name('verification.approve');
+    Route::delete('verifikasi/{user}/reject', [AdminController::class, 'rejectUser'])->name('verification.reject');
 
     // Menampilkan daftar warga aktif
-    Route::get('users', [AdminController::class, 'showUserList'])
-        ->name('users.list');
-    // Menghapus warga aktif (jika diperlukan)
-    Route::delete('users/{user}', [AdminController::class, 'destroyUser'])
-        ->name('users.destroy');
+    Route::get('users', [AdminController::class, 'showUserList'])->name('users.list');
+    Route::delete('users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
 });
