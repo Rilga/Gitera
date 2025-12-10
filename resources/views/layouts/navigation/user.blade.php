@@ -34,10 +34,11 @@
                     <span>Info Layanan</span>
                 </a>
 
-                <!-- Riwayat -->
-                <a href="#" 
-                   class="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-[#00C07F] transition-colors duration-200">
-                    <i class="fas fa-history text-lg text-gray-400"></i>
+                <!-- IRiwayat -->
+                <a href="{{ route('user.riwayat') }}" 
+                   class="flex items-center gap-2 text-sm font-medium transition-colors duration-200 
+                          {{ request()->routeIs('user.riwayat') ? 'text-[#00C07F] font-bold' : 'text-gray-500 hover:text-[#00C07F]' }}">
+                    <i class="fas fa-history text-lg {{ request()->routeIs('user.riwayat') ? 'text-[#00C07F]' : 'text-gray-400' }}"></i>
                     <span>Riwayat</span>
                 </a>
             </div>

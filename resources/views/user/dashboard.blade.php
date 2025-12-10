@@ -52,7 +52,7 @@
             {{-- SECTION 2: STATS CARDS --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                <!-- Card 1: Pengajuan Aktif (Hijau) -->
+                <!-- Card 1: Pengajuan Aktif -->
                 <div class="bg-white rounded-2xl p-5 text-gray-800 relative overflow-hidden shadow-sm border border-gray-100 hover:-translate-y-1 transition">
                     <div class="flex justify-between items-start">
                         <div class="p-2 bg-green-100 text-green-600 rounded-lg backdrop-blur-sm">
@@ -60,13 +60,13 @@
                         </div>
                         <span class="bg-green-100 text-[10px] text-green-600 font-bold px-2 py-1 rounded backdrop-blur-sm">Baru</span>
                     </div>
-                    <div class="mt-3 ml-1"> <!-- Margin top dikurangi agar lebih pendek -->
-                        <h2 class="text-3xl font-bold">2</h2>
+                    <div class="mt-3 ml-1">
+                        <h2 class="text-3xl font-bold">{{ $pengajuanAktif }}</h2>
                         <p class="text-gray-500 text-sm font-medium">Pengajuan Aktif</p>
                     </div>
                 </div>
 
-                <!-- Card 2: Total Pengajuan (Putih dengan Aksen Orange) -->
+                <!-- Card 2: Total Pengajuan -->
                 <div class="bg-white rounded-2xl p-5 text-gray-800 relative overflow-hidden shadow-sm border border-gray-100 transition hover:-translate-y-1">
                     <div class="flex justify-between items-start">
                         <div class="p-2 bg-orange-50 text-orange-500 rounded-lg">
@@ -75,7 +75,7 @@
                         <span class="bg-orange-100 text-orange-600 text-[10px] font-bold px-2 py-1 rounded">Selesai</span>
                     </div>
                     <div class="mt-3 ml-1">
-                        <h2 class="text-3xl font-bold text-gray-900">5</h2>
+                        <h2 class="text-3xl font-bold text-gray-900">{{ $totalPengajuan }}</h2>
                         <p class="text-gray-500 text-sm font-medium">Total Pengajuan Surat</p>
                     </div>
                 </div>
@@ -116,7 +116,10 @@
 
             {{-- SECTION 4: PILIH JENIS SURAT --}}
             <div class="space-y-6">
-                <h2 class="text-2xl font-bold text-gray-900">Pilih Jenis Surat</h2>
+                <div class="flex justify-between items-end">
+                    <h2 class="text-2xl font-bold text-gray-900">Pilih Jenis Surat</h2>
+                    <a href="{{ route('user.listlayanan') }}" class="text-[#00C07F] font-semibold hover:underline text-sm">Lihat Semua</a>
+                </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     
@@ -177,7 +180,7 @@
                     </a>
 
                     <!-- Surat 5: Tidak Mampu -->
-                    <a href="#" class="group bg-white p-6 rounded-2xl border border-gray-100 hover:border-orange-500 hover:shadow-md transition-all duration-300 flex items-center justify-between">
+                    <a href="{{ route('layanan.show', 'sktm') }}" class="group bg-white p-6 rounded-2xl border border-gray-100 hover:border-orange-500 hover:shadow-md transition-all duration-300 flex items-center justify-between">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl group-hover:bg-orange-500 group-hover:text-white transition-colors">
                                 <i class="fas fa-hands-helping"></i>
@@ -211,41 +214,51 @@
             <div class="space-y-6 pb-10">
                 <div class="flex justify-between items-end">
                     <h2 class="text-2xl font-bold text-gray-900">Pengajuan Terbaru</h2>
-                    <a href="#" class="text-[#00C07F] font-semibold hover:underline text-sm">Lihat Semua</a>
+                    <a href="{{ route('user.riwayat') }}" class="text-[#00C07F] font-semibold hover:underline text-sm">Lihat Semua</a>
                 </div>
                 
                 <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-                    
-                    <!-- Item 1 -->
-                    <div class="p-6 flex items-center justify-between border-b border-gray-50 hover:bg-gray-50 transition">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-green-50 text-[#00C07F] flex items-center justify-center">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900">Akta Kelahiran</h4>
-                                <p class="text-xs text-gray-500">#U1323 • 20-11-2025</p>
-                            </div>
-                        </div>
-                        <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-xs font-bold">Diproses</span>
-                    </div>
 
-                    <!-- Item 2 -->
-                    <div class="p-6 flex items-center justify-between hover:bg-gray-50 transition">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-green-50 text-[#00C07F] flex items-center justify-center">
-                                <i class="fas fa-file-alt"></i>
+                    @forelse($pengajuanTerbaru as $item)
+                        @php
+                            // Map status ke warna & label
+                            $statusMap = [
+                                'pending' => ['color' => 'blue', 'label' => 'Diproses'],
+                                'verified' => ['color' => 'green', 'label' => 'Selesai'],
+                                'rejected' => ['color' => 'red', 'label' => 'Ditolak'],
+                            ];
+                            
+                            $st = $statusMap[$item->status];
+                        @endphp
+
+                        <a href="{{ route('user.riwayat.show', $item->id) }}"
+                            class="block p-6 flex items-center justify-between border-b border-gray-50 hover:bg-gray-50 transition">
+
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-green-50 text-[#00C07F] flex items-center justify-center">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">{{ $item->title }}</h4>
+                                    <p class="text-xs text-gray-500">#{{ $item->slug }} • {{ $item->created_at->format('d-m-Y') }}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900">Surat Domisili</h4>
-                                <p class="text-xs text-gray-500">#U1324 • 18-11-2025</p>
-                            </div>
+
+                            <span class="px-3 py-1 rounded-full bg-{{ $st['color'] }}-100 text-{{ $st['color'] }}-600 text-xs font-bold">
+                                {{ $st['label'] }}
+                            </span>
+
+                        </a>
+
+                    @empty
+                        <div class="p-6 text-center text-gray-500 text-sm">
+                            Belum ada pengajuan surat.
                         </div>
-                        <span class="px-3 py-1 rounded-full bg-green-100 text-green-600 text-xs font-bold">Selesai</span>
-                    </div>
+                    @endforelse
 
                 </div>
             </div>
+
 
         </div>
     </div>

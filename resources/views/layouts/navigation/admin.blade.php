@@ -18,27 +18,16 @@
             
             <!-- Dashboard Link (Active State sesuai gambar) -->
             <a href="{{ route('admin.dashboard') }}" 
-               class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group {{ request()->routeIs('admin.dashboard') ? 'bg-green-50 text-green-700 font-semibold shadow-sm ring-1 ring-green-100' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group {{ request()->routeIs('admin.dashboard') ? 'bg-green-50 text-green-700 font-semibold shadow-sm ring-1 ring-green-100' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
                 <i class="{{ request()->routeIs('admin.dashboard') ? 'fas fa-th-large' : 'fas fa-th-large' }} w-5 text-center {{ request()->routeIs('admin.dashboard') ? 'text-green-600' : 'text-gray-400 group-hover:text-gray-600' }}"></i>
                 <span>Dashboard</span>
             </a>
 
             <!-- Data Pengajuan -->
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-                <i class="fas fa-clipboard-list w-5 text-center text-gray-400 group-hover:text-gray-600"></i>
+            <a href="{{ route('admin.pengajuan.index') }}" 
+                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group {{ request()->routeIs('admin.pengajuan.index') ? 'bg-green-50 text-green-700 font-semibold shadow-sm ring-1 ring-green-100' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900' }}">
+                <i class="{{ request()->routeIs('admin.dashboard') ? 'fas fa-clipboard-list' : 'fas fa-clipboard-list' }} w-5 text-center {{ request()->routeIs('admin.pengajuan.index') ? 'text-green-600' : 'text-gray-400 group-hover:text-gray-600' }}"></i>
                 <span>Data Pengajuan</span>
-            </a>
-
-            <!-- Data RT/RW -->
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-                <i class="fas fa-building w-5 text-center text-gray-400 group-hover:text-gray-600"></i>
-                <span>Data RT/RW</span>
-            </a>
-
-             <!-- Kepentingan Surat -->
-             <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group">
-                <i class="fas fa-envelope-open-text w-5 text-center text-gray-400 group-hover:text-gray-600"></i>
-                <span>Kepentingan Surat</span>
             </a>
 
             <!-- Data User (Menu yang sudah kita buat) -->

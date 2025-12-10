@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Models\PengajuanSurat;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -10,27 +11,84 @@ class AdminController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard');
+        // --- 1. Statistik Atas ---
+
+        // Hitung user dengan role 'user' dan status 'pending'
+        $totalAkunPending = User::where('role', 'user')
+                                ->where('status', 'pending')
+                                ->count();
+
+        // Total seluruh user warga
+        $totalAkun = User::where('role', 'user')->count();
+        
+        // Surat baru (status pending)
+        $suratBaru = PengajuanSurat::where('status', 'pending')->count();
+        
+        // Total seluruh surat masuk
+        $suratTotal = PengajuanSurat::count();
+        
+        // Surat Keluar (Diasumsikan status 'verified' artinya surat sudah jadi/disetujui)
+        $suratKeluar = PengajuanSurat::where('status', 'verified')->count();
+        
+        // Dummy kenaikan (bisa diganti logic real jika ada data bulan lalu)
+        $kenaikanSurat = 15; 
+
+        // --- 2. Tabel Pengajuan Surat Masuk (Kiri Bawah) ---
+        // Relasi 'user' harus didefinisikan di model PengajuanSurat
+        $recentSurats = PengajuanSurat::with('user')
+                                    ->latest() // Order by created_at desc
+                                    ->take(5)
+                                    ->get();
+
+        // --- 3. List Pengajuan Akun (Kanan Bawah - Sidebar) ---
+        $recentAccounts = User::where('role', 'user')
+                            ->where('status', 'pending') // Fokus menampilkan yang pending saja agar admin notice
+                            ->latest()
+                            ->take(7)
+                            ->get();
+
+        return view('admin.dashboard', compact(
+            'totalAkunPending', 'totalAkun', 
+            'suratBaru', 'suratTotal', 'suratKeluar', 'kenaikanSurat',
+            'recentSurats', 'recentAccounts'
+        ));
     }
 
     // Method untuk menampilkan halaman daftar verifikasi
-    public function showVerificationList()
+    public function showVerificationList(Request $request)
     {
+        $search = $request->query('search');
+
         // Ambil semua user dengan role 'user' dan status 'pending'
         $pendingUsers = User::where('role', 'user')
-                            ->where('status', 'pending')
-                            ->orderBy('created_at', 'desc')
-                            ->get();
-    
+            ->where('status', 'pending')
+            ->when($search, function($query, $search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('nik', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         // Ambil user yang approved (Warga Aktif)
         $users = User::where('role', 'user')
-                    ->where('status', 'approved')
-                    ->orderBy('name', 'asc')
-                    ->get();
+            ->where('status', 'approved')
+            ->when($search, function($query, $search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('nik', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('name', 'asc')
+            ->get();
 
         // Tampilkan view dan kirim datanya
         return view('admin.verification-list', compact('pendingUsers', 'users'));
     }
+
 
     // Method untuk memproses persetujuan
     public function approveUser(User $user)
