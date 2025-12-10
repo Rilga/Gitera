@@ -5,10 +5,12 @@ namespace App\Http\Controllers\admin;
 use App\Models\PengajuanSurat;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Traits\WhatsappTrait;
 use PDF;
 
 class PengajuanSuratController extends Controller
 {
+    use WhatsappTrait;
     // LIST DATA
     public function index(Request $request)
     {
@@ -45,17 +47,34 @@ class PengajuanSuratController extends Controller
         return view('admin.pengajuan.show', compact('pengajuan'));
     }
 
-    // SETUJUI
+    // --- FUNGSI SETUJUI (APPROVE) DENGAN NOTIFIKASI BARU ---
     public function approve($id)
     {
         $pengajuan = PengajuanSurat::findOrFail($id);
+        
+        // Cek apakah status sudah verified
+        if ($pengajuan->status == 'verified') {
+            return back()->with('warning', 'Pengajuan sudah disetujui sebelumnya.');
+        }
+
         $pengajuan->status = 'verified';
         $pengajuan->save();
 
-        return back()->with('success', 'Pengajuan berhasil disetujui.');
+        // KIRIM NOTIFIKASI WHATSAPP UNTUK DISETUJUI
+        $no_hp = $pengajuan->user->no_hp ?? null; 
+        $nama = $pengajuan->user->name ?? 'Pemohon';
+        $jenis_surat = $pengajuan->title;
+
+        if ($no_hp) {
+            // PESAN NOTIFIKASI BARU (tanpa link download)
+            $pesan = "Halo *$nama*,\n\nPengajuan surat Anda (*$jenis_surat*) telah *DISETUJUI*.\n\nAnda dapat mengambil surat yang sudah ditandatangani di **Kantor Desa** pada jam kerja.\n\nTerima kasih atas penggunaan layanan ini.";
+            $this->sendWhatsappNotification($no_hp, $pesan);
+        }
+
+        return back()->with('success', 'Pengajuan berhasil disetujui. Notifikasi WhatsApp telah dikirim.');
     }
 
-    // TOLAK
+    // --- FUNGSI TOLAK (REJECT) DENGAN NOTIFIKASI BARU ---
     public function reject(Request $request, $id)
     {
         $request->validate([
@@ -63,13 +82,30 @@ class PengajuanSuratController extends Controller
         ]);
 
         $pengajuan = PengajuanSurat::findOrFail($id);
+        
+        // Cek apakah status sudah rejected
+        if ($pengajuan->status == 'rejected') {
+            return back()->with('warning', 'Pengajuan sudah ditolak sebelumnya.');
+        }
 
         $pengajuan->status = 'rejected';
         $pengajuan->notes = $request->alasan; // gunakan kolom notes
 
         $pengajuan->save();
 
-        return back()->with('success', 'Pengajuan berhasil ditolak.');
+        // KIRIM NOTIFIKASI WHATSAPP UNTUK DITOLAK
+        $no_hp = $pengajuan->user->no_hp ?? null; 
+        $nama = $pengajuan->user->name ?? 'Pemohon';
+        $jenis_surat = $pengajuan->title;
+        $alasan_tolak = $request->alasan;
+
+        if ($no_hp) {
+            // PESAN NOTIFIKASI BARU
+            $pesan = "Halo *$nama*,\n\nMohon maaf, pengajuan surat Anda (*$jenis_surat*) telah *DITOLAK*.\n\nAlasan penolakan: *$alasan_tolak*.\n\nMohon untuk **memperbaiki data** dan mengajukan kembali.";
+            $this->sendWhatsappNotification($no_hp, $pesan);
+        }
+
+        return back()->with('success', 'Pengajuan berhasil ditolak. Notifikasi WhatsApp telah dikirim.');
     }
 
     // DOWNLOAD SURAT PDF
