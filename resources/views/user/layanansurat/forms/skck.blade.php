@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <form id="pengajuanForm" action="{{ route('layanan.store', $slug) }}" method="POST" enctype="multipart/form-data">
+            <form id="pengajuanForm" action="{{ route('layanan.store', $slug) }}" method="POST">
                 @csrf
 
                 <!-- Nama Lengkap -->
@@ -173,7 +173,7 @@
 
                             <!-- multiple -->
                             {{-- <input id="file-input" type="file" name="files[]" multiple class="hidden"> --}}
-                            <input id="fileInput" type="file" name="files[]" multiple class="hidden"/>
+                            <input id="fileInput" type="file" multiple class="hidden"/>
                             <input type="hidden" name="files_json" id="files_json">
                         </label>
                     </div>
