@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('layanan.store', $slug) }}" method="POST">
+            <form id="pengajuanForm" action="{{ route('layanan.store', $slug) }}" method="POST">
                 @csrf
 
                 <!-- Nama Lengkap -->
@@ -173,9 +173,8 @@
 
                             <!-- multiple -->
                             {{-- <input id="file-input" type="file" name="files[]" multiple class="hidden"> --}}
-                            <input type="file" id="files" multiple class="block w-full">
-
-                            <input type="hidden" name="files" id="uploadedFiles">
+                            <input type="file" id="fileInput" multiple class="hidden">
+                            <input type="hidden" name="files" id="filesData">
                         </label>
                     </div>
                 </div>
@@ -189,7 +188,7 @@
                         Kembali
                     </a>
 
-                    <button type="submit" class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-8 py-3 inline-flex items-center shadow-lg shadow-green-200">
+                    <button type="submit" id="submitBtn" class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-8 py-3 inline-flex items-center shadow-lg shadow-green-200">
                         Kirim Pengajuan
                         <svg class="w-3.5 h-3.5 ms-2" fill="none" viewBox="0 0 14 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
@@ -270,85 +269,62 @@
 
     <!-- JS PREVIEW FILE -->
     <script>
-        const input = document.getElementById("file-input");
-        const preview = document.getElementById("file-preview");
+    const input = document.getElementById("fileInput");
+    const preview = document.getElementById("file-preview");
+    let allFiles = [];
 
-        let allFiles = []; // ← menyimpan seluruh file, tidak tertimpa
+    input.addEventListener("change", function () {
+        allFiles = [...allFiles, ...Array.from(input.files)];
 
-        input.addEventListener("change", function (event) {
-            const newFiles = Array.from(event.target.files);
-
-            // Tambahkan file baru ke list lama
-            allFiles = [...allFiles, ...newFiles];
-
-            // Update daftar file di UI
-            preview.innerHTML = "";
-            allFiles.forEach((file, index) => {
-                const item = document.createElement("div");
-                item.classList = "text-sm text-gray-700 flex justify-between items-center bg-gray-100 px-3 py-2 rounded";
-
-                item.innerHTML = `
-                    <span>${index + 1}. ${file.name}</span>
-                `;
-                preview.appendChild(item);
-            });
-
-            // Buat DataTransfer agar input bisa menyimpan banyak file meski upload satu-satu
-            const dataTransfer = new DataTransfer();
-            allFiles.forEach(f => dataTransfer.items.add(f));
-            input.files = dataTransfer.files;
+        preview.innerHTML = "";
+        allFiles.forEach((file, i) => {
+            preview.innerHTML += `<div class="text-sm">${i+1}. ${file.name}</div>`;
         });
-    </script>
-    <script>
-    const CLOUD_NAME = "{{ env('CLOUDINARY_CLOUD_NAME') }}";
-    const UPLOAD_PRESET = "{{ env('CLOUDINARY_UPLOAD_PRESET') }}";
 
-    async function uploadToCloudinary(files) {
-        const uploaded = [];
+        const dt = new DataTransfer();
+        allFiles.forEach(f => dt.items.add(f));
+        input.files = dt.files;
+    });
+    </script>
+
+    <script>
+    document.getElementById('submitBtn').addEventListener('click', async function () {
+        const form = document.getElementById('pengajuanForm');
+        const files = document.getElementById('fileInput').files;
+        let uploaded = [];
 
         for (let file of files) {
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("upload_preset", UPLOAD_PRESET);
+            const fd = new FormData();
+            fd.append('file', file);
+            fd.append('upload_preset', 'pengajuan_unsigned');
 
             const res = await fetch(
-                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
-                {
-                    method: "POST",
-                    body: formData
-                }
+                'https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/auto/upload',
+                { method: 'POST', body: fd }
             );
 
             const data = await res.json();
 
+            if (!data.secure_url) {
+                alert('Upload gagal');
+                return;
+            }
+
             uploaded.push({
                 url: data.secure_url,
-                public_id: data.public_id,
-                original_name: file.name,
-                size: file.size,
-                mime: file.type,
+                name: file.name,
+                type: file.type,
+                size: file.size
             });
         }
 
-        return uploaded;
-    }
+        document.getElementById('filesData').value = JSON.stringify(uploaded);
 
-    document.querySelector("form").addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        const files = document.getElementById("files").files;
-        if (files.length === 0) {
-            alert("File wajib diunggah");
-            return;
-        }
-
-        const uploadedFiles = await uploadToCloudinary(files);
-
-        document.getElementById("uploadedFiles").value =
-            JSON.stringify(uploadedFiles);
-
-        e.target.submit();
+        // 🔥 BARU SUBMIT
+        form.submit();
     });
     </script>
+
+
 
 </x-app-layout>

@@ -104,16 +104,18 @@ class LayananPersuratanController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:255',
-            'files' => 'required|array', // ⬅️ sekarang URL, bukan file
+            'files' => 'nullable|string', // JSON
         ]);
+
+        $files = $request->files ? json_decode($request->files, true) : [];
 
         PengajuanSurat::create([
             'user_id' => auth()->id(),
-            'slug'    => $slug,
-            'title'   => $this->layananList[$slug],
-            'data'    => $request->except(['files', '_token']),
-            'files'   => $request->files, // JSON URL Cloudinary
-            'status'  => 'pending',
+            'slug' => $slug,
+            'title' => $this->layananList[$slug],
+            'data' => $request->except(['_token', 'files']),
+            'files' => $files,
+            'status' => 'pending',
         ]);
 
         return back()->with('success', 'Pengajuan berhasil dikirim.');
