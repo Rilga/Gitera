@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <form id="pengajuanForm" action="{{ route('layanan.store', $slug) }}" method="POST">
+            <form id="pengajuanForm" action="{{ route('layanan.store', $slug) }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <!-- Nama Lengkap -->
@@ -173,8 +173,8 @@
 
                             <!-- multiple -->
                             {{-- <input id="file-input" type="file" name="files[]" multiple class="hidden"> --}}
-                            <input type="file" id="fileInput" multiple class="hidden">
-                            <input type="hidden" name="files" id="filesData">
+                            <input type="file" name="files[]" multiple>
+                            <input type="hidden" name="files_json" id="files_json">
                         </label>
                     </div>
                 </div>
@@ -188,7 +188,7 @@
                         Kembali
                     </a>
 
-                    <button type="button" id="submitBtn" class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-8 py-3 inline-flex items-center shadow-lg shadow-green-200">
+                    <button type="submit" id="submitBtn" class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-8 py-3 inline-flex items-center shadow-lg shadow-green-200">
                         Kirim Pengajuan
                         <svg class="w-3.5 h-3.5 ms-2" fill="none" viewBox="0 0 14 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
@@ -288,62 +288,39 @@
     </script>
 
     <script>
-    document.getElementById('submitBtn').addEventListener('click', async function () {
-
-        const files = document.getElementById('fileInput').files;
-        let uploaded = [];
+    async function uploadFilesToCloudinary(files) {
+        const uploaded = [];
 
         for (let file of files) {
-            const fd = new FormData();
-            fd.append('file', file);
-            fd.append('upload_preset', 'pengajuan_unsigned');
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'pengajuan_unsigned');
 
-            const res = await fetch(
-                'https://api.cloudinary.com/v1_1/CLOUD_NAME/auto/upload',
-                { method: 'POST', body: fd }
-            );
+            const res = await fetch('https://api.cloudinary.com/v1_1/dnzeydwvq/upload', {
+                method: 'POST',
+                body: formData
+            });
 
             const data = await res.json();
-
             uploaded.push({
                 url: data.secure_url,
-                name: file.name,
-                type: file.type,
-                size: file.size
+                public_id: data.public_id
             });
         }
 
-        // 🔥 KIRIM KE BACKEND VIA AJAX
-        const payload = {
-            nama: document.querySelector('[name=nama]').value,
-            nik: document.querySelector('[name=nik]').value,
-            ttl: document.querySelector('[name=ttl]').value,
-            alamat: document.querySelector('[name=alamat]').value,
-            pekerjaan: document.querySelector('[name=pekerjaan]').value,
-            status: document.querySelector('[name=status]').value,
-            agama: document.querySelector('[name=agama]').value,
-            kewarganegaraan: document.querySelector('[name=kewarganegaraan]').value,
-            keperluan: document.querySelector('[name=keperluan]').value,
-            files: uploaded
-        };
+        return uploaded;
+    }
 
-        const res = await fetch("{{ route('layanan.store', $slug) }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify(payload)
-        });
+    document.querySelector('form').addEventListener('submit', async function (e) {
+        e.preventDefault();
 
-        if (res.ok) {
-            window.location.href = "{{ route('user.riwayat') }}";
-        } else {
-            alert("Gagal mengirim pengajuan");
-        }
+        const files = document.querySelector('input[type=file]').files;
+        const uploaded = await uploadFilesToCloudinary(files);
+
+        document.getElementById('files_json').value = JSON.stringify(uploaded);
+
+        this.submit();
     });
     </script>
-
-
 
 </x-app-layout>
