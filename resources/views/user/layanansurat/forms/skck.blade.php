@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('layanan.store', $slug) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('layanan.store', $slug) }}" method="POST">
                 @csrf
 
                 <!-- Nama Lengkap -->
@@ -172,7 +172,10 @@
                             </div>
 
                             <!-- multiple -->
-                            <input id="file-input" type="file" name="files[]" multiple class="hidden">
+                            {{-- <input id="file-input" type="file" name="files[]" multiple class="hidden"> --}}
+                            <input type="file" id="files" multiple class="block w-full">
+
+                            <input type="hidden" name="files" id="uploadedFiles">
                         </label>
                     </div>
                 </div>
@@ -295,6 +298,57 @@
             allFiles.forEach(f => dataTransfer.items.add(f));
             input.files = dataTransfer.files;
         });
+    </script>
+    <script>
+    const CLOUD_NAME = "{{ env('CLOUDINARY_CLOUD_NAME') }}";
+    const UPLOAD_PRESET = "{{ env('CLOUDINARY_UPLOAD_PRESET') }}";
+
+    async function uploadToCloudinary(files) {
+        const uploaded = [];
+
+        for (let file of files) {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", UPLOAD_PRESET);
+
+            const res = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+            const data = await res.json();
+
+            uploaded.push({
+                url: data.secure_url,
+                public_id: data.public_id,
+                original_name: file.name,
+                size: file.size,
+                mime: file.type,
+            });
+        }
+
+        return uploaded;
+    }
+
+    document.querySelector("form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const files = document.getElementById("files").files;
+        if (files.length === 0) {
+            alert("File wajib diunggah");
+            return;
+        }
+
+        const uploadedFiles = await uploadToCloudinary(files);
+
+        document.getElementById("uploadedFiles").value =
+            JSON.stringify(uploadedFiles);
+
+        e.target.submit();
+    });
     </script>
 
 </x-app-layout>

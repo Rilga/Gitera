@@ -104,44 +104,21 @@ class LayananPersuratanController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:255',
-            'files.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:51200',
+            'files' => 'required|array', // ⬅️ sekarang URL, bukan file
         ]);
 
-        $userId = auth()->id();
-        $storedFiles = [];
-
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-
-                $upload = Cloudinary::upload(
-                    $file->getRealPath(),
-                    [
-                        'folder' => "pengajuan/{$slug}/user-{$userId}",
-                        'resource_type' => 'auto',
-                    ]
-                );
-
-                $storedFiles[] = [
-                    'url' => $upload->getSecurePath(),
-                    'public_id' => $upload->getPublicId(),
-                    'original_name' => $file->getClientOriginalName(),
-                    'size' => $file->getSize(),
-                    'mime' => $file->getClientMimeType(),
-                ];
-            }
-        }
-
         PengajuanSurat::create([
-            'user_id' => $userId,
-            'slug' => $slug,
-            'title' => $this->layananList[$slug],
-            'data' => $request->except(['_token', 'files']),
-            'files' => $storedFiles,
-            'status' => 'pending',
+            'user_id' => auth()->id(),
+            'slug'    => $slug,
+            'title'   => $this->layananList[$slug],
+            'data'    => $request->except(['files', '_token']),
+            'files'   => $request->files, // JSON URL Cloudinary
+            'status'  => 'pending',
         ]);
 
         return back()->with('success', 'Pengajuan berhasil dikirim.');
     }
+
 
     public function downloadPdf($id)
     {
