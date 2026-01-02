@@ -28,7 +28,7 @@
                     <!-- Logo -->
                     <div class="flex-shrink-0 flex items-center gap-3">
                         <!-- Icon Logo (Simulasi Logo di Gambar) -->
-                        <img src="{{ asset('asset/logo-coloured.png') }}" alt="Logo SimpelBS" class="w-12 h-12 object-contain">
+                        <img src="{{ asset('asset/Logo-coloured.png') }}" alt="Logo SimpelBS" class="w-12 h-12 object-contain">
                         <div class="leading-tight">
                             <span class="font-bold text-xl text-gray-900 block">SimpelBS</span>
                             <span class="text-[10px] text-gray-500 uppercase tracking-wider font-medium pl-0.5">Sistem Pelayanan Banjarsari</span>

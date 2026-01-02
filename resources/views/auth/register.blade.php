@@ -14,7 +14,7 @@
 
             <!-- Logo -->
             <div class="absolute top-8 left-8 z-20 flex items-center gap-3">
-                <img src="{{ asset('asset/logo-white.png') }}" alt="Logo SimpelBS" class="w-10 h-10 object-contain ml-5">
+                <img src="{{ asset('asset/Logo-white.png') }}" alt="Logo SimpelBS" class="w-10 h-10 object-contain ml-5">
                 <span class="text-2xl font-bold tracking-wide">SimpelBS</span>
             </div>
 
