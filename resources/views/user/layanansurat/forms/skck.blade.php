@@ -27,6 +27,16 @@
                 </div>
             </div>
 
+            @if ($errors->any())
+                <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded">
+                    <ul class="text-sm text-red-600 list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form id="pengajuanForm" action="{{ route('layanan.store', $slug) }}" method="POST">
                 @csrf
 
@@ -49,7 +59,7 @@
                     <label class="block text-sm font-bold text-gray-900 mb-2">
                         NIK (Nomor Induk Kependudukan) <span class="text-red-500">*</span>
                     </label>
-                    <input type="number" name="nik" required 
+                    <input type="text" name="nik" required 
                            class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block p-3" 
                            value="{{ old('nik') }}" placeholder="3374012304890123">
                     <div class="mt-2 flex items-center gap-1 text-xs text-gray-500">
