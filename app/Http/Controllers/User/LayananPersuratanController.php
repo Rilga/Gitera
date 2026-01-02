@@ -101,72 +101,36 @@ class LayananPersuratanController extends Controller
         if (!array_key_exists($slug, $this->layananList)) {
             abort(404);
         }
-    
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'files.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:51200',
         ]);
-    
+
         $userId = auth()->id();
         $storedFiles = [];
-<<<<<<< HEAD
 
-        // ===============================
-        // UPLOAD FILE KE CLOUDINARY
-        // ===============================
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
 
-=======
-    
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-    
->>>>>>> befb3f8f96b0318dff12e9cd6551b8c5da4d2fe2
                 $upload = Cloudinary::upload(
                     $file->getRealPath(),
                     [
                         'folder' => "pengajuan/{$slug}/user-{$userId}",
-<<<<<<< HEAD
-                        'resource_type' => 'auto', // penting agar PDF, DOC, ZIP bisa
+                        'resource_type' => 'auto',
                     ]
                 );
 
                 $storedFiles[] = [
-                    'url' => $upload->getSecurePath(),     // URL HTTPS
-                    'public_id' => $upload->getPublicId(), // opsional (untuk delete)
-=======
-                        'resource_type' => 'auto',
-                    ]
-                );
-    
-                $storedFiles[] = [
                     'url' => $upload->getSecurePath(),
                     'public_id' => $upload->getPublicId(),
->>>>>>> befb3f8f96b0318dff12e9cd6551b8c5da4d2fe2
                     'original_name' => $file->getClientOriginalName(),
                     'size' => $file->getSize(),
                     'mime' => $file->getClientMimeType(),
                 ];
             }
         }
-<<<<<<< HEAD
 
-        // Ambil data form (kecuali token & files)
-        $formData = $request->except(['_token', 'files']);
-
-        // ===============================
-        // SIMPAN KE DATABASE
-        // ===============================
-        PengajuanSurat::create([
-            'user_id' => $userId,
-            'slug'    => $slug,
-            'title'   => $this->layananList[$slug],
-            'data'    => $formData,
-            'files'   => $storedFiles, // JSON berisi URL Cloudinary
-            'status'  => 'pending',
-=======
-    
         PengajuanSurat::create([
             'user_id' => $userId,
             'slug' => $slug,
@@ -174,9 +138,8 @@ class LayananPersuratanController extends Controller
             'data' => $request->except(['_token', 'files']),
             'files' => $storedFiles,
             'status' => 'pending',
->>>>>>> befb3f8f96b0318dff12e9cd6551b8c5da4d2fe2
         ]);
-    
+
         return back()->with('success', 'Pengajuan berhasil dikirim.');
     }
 
