@@ -45,16 +45,6 @@
 
             <!-- Right: Notification & Profile -->
             <div class="hidden sm:flex sm:items-center sm:ms-6 gap-6">
-                
-                <!-- Notification Bell -->
-                <button class="relative p-2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none">
-                    <i class="far fa-bell text-xl"></i>
-                    <!-- Badge Merah -->
-                    <span class="absolute top-1 right-1 flex items-center justify-center w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full border-2 border-white shadow-sm">
-                        3
-                    </span>
-                </button>
-
                 <!-- Profile Dropdown -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -122,7 +112,7 @@
             <x-responsive-nav-link :href="route('user.layanan')" :active="request()->routeIs('layanan.*')">
                 <i class="fas fa-info-circle w-6 text-center"></i> {{ __('Info Layanan') }}
             </x-responsive-nav-link>
-             <x-responsive-nav-link href="#">
+             <x-responsive-nav-link :href="route('user.riwayat')" :active="request()->routeIs('user.riwayat')">
                 <i class="fas fa-history w-6 text-center"></i> {{ __('Riwayat') }}
             </x-responsive-nav-link>
         </div>

@@ -82,11 +82,11 @@
                                 {{-- Nama + Avatar --}}
                                 <td class="py-3 px-4 flex items-center gap-3">
                                     <img class="w-10 h-10 rounded-full object-contain border-2 border-gray-100"
-                                         src="https://ui-avatars.com/api/?name={{ urlencode($p->data['nama'] ?? 'Pengaju') }}&background=random&color=fff"
-                                         alt="{{ $p->data['nama'] ?? 'Pengaju' }}" />
+                                         src="https://ui-avatars.com/api/?name={{ urlencode($p->user->name) }}&background=random&color=fff"
+                                         alt="{{ $p->user->name }}" />
 
                                     <span class="font-medium text-gray-800">
-                                        {{ $p->data['nama'] ?? 'Tidak ada nama' }}
+                                        {{ $p->user->name }}
                                     </span>
                                 </td>
 

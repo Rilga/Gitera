@@ -145,8 +145,19 @@
                             {{ $pengajuan->title }}
                         </p>
                     </div>
-
                 </div>
+                @if(in_array($status, ['rejected', 'ditolak']) && !empty($pengajuan->notes))
+                    <div class="bg-red-50 border border-red-200 rounded-2xl p-4 mt-3">
+                        <h3 class="font-bold text-red-700 text-lg flex items-center gap-2">
+                            <i class="fas fa-exclamation-circle"></i>
+                            Alasan Penolakan
+                        </h3>
+
+                        <p class="text-sm text-red-800 leading-relaxed whitespace-pre-line">
+                            {{ $pengajuan->notes }}
+                        </p>
+                    </div>
+                @endif
             </div>
 
             <!-- Card Lampiran Berkas -->

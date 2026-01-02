@@ -29,7 +29,7 @@
 
             <div class="min-h-screen flex flex-col transition-all duration-300 {{ Auth::user()->role === 'admin' ? 'lg:ml-64' : '' }}">
                 
-                <!-- Top Navbar (Header Putih) -->
+                {{-- <!-- Top Navbar (Header Putih) -->
                 <header class="bg-white border-b border-gray-200 h-16 sticky top-0 z-30 w-full flex items-center px-4 sm:px-6 lg:px-8 shadow-sm {{ Auth::user()->role === 'admin' ? '' : 'lg:hidden' }}">
                     <div class="flex items-center justify-between w-full">
                         <div class="flex items-center gap-4">
@@ -47,19 +47,12 @@
                         </div>
 
                         <div class="flex items-center gap-4">
-                            @if(Auth::user()->role === 'admin')
-                                <button class="text-gray-400 hover:text-gray-600 relative p-2 rounded-full hover:bg-gray-100 transition">
-                                    <i class="fas fa-bell text-lg"></i>
-                                    <span class="absolute top-1.5 right-2 block h-2 w-2 rounded-full ring-2 ring-white bg-red-500"></span>
-                                </button>
-                            @endif
-                            
                             <div class="lg:hidden flex items-center gap-2">
                                 <span class="text-sm font-medium text-gray-700">{{ Auth::user()->name }}</span>
                             </div>
                         </div>
                     </div>
-                </header>
+                </header> --}}
 
                 <!-- Page Content Area -->
                 <main class="p-4 sm:p-6 lg:p-8">
