@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\PengajuanSurat;
 use Illuminate\Support\Facades\Storage;
 use PDF; // barryvdh/laravel-dompdf
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class LayananPersuratanController extends Controller
 {
@@ -54,15 +55,12 @@ class LayananPersuratanController extends Controller
     
         $request->validate([
             'nama' => 'required|string|max:255',
-            'files.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx,zip,rar|max:51200',
+            'files.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx|max:51200',
         ]);
     
         $userId = auth()->id();
         $storedFiles = [];
     
-        // ===============================
-        // UPLOAD FILE KE CLOUDINARY
-        // ===============================
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
     
@@ -70,13 +68,13 @@ class LayananPersuratanController extends Controller
                     $file->getRealPath(),
                     [
                         'folder' => "pengajuan/{$slug}/user-{$userId}",
-                        'resource_type' => 'auto', // penting agar PDF, DOC, ZIP bisa
+                        'resource_type' => 'auto',
                     ]
                 );
     
                 $storedFiles[] = [
-                    'url' => $upload->getSecurePath(),     // URL HTTPS
-                    'public_id' => $upload->getPublicId(), // opsional (untuk delete)
+                    'url' => $upload->getSecurePath(),
+                    'public_id' => $upload->getPublicId(),
                     'original_name' => $file->getClientOriginalName(),
                     'size' => $file->getSize(),
                     'mime' => $file->getClientMimeType(),
@@ -84,24 +82,16 @@ class LayananPersuratanController extends Controller
             }
         }
     
-        // Ambil data form (kecuali token & files)
-        $formData = $request->except(['_token', 'files']);
-    
-        // ===============================
-        // SIMPAN KE DATABASE
-        // ===============================
         PengajuanSurat::create([
             'user_id' => $userId,
-            'slug'    => $slug,
-            'title'   => $this->layananList[$slug],
-            'data'    => $formData,
-            'files'   => $storedFiles, // JSON berisi URL Cloudinary
-            'status'  => 'pending',
+            'slug' => $slug,
+            'title' => $this->layananList[$slug],
+            'data' => $request->except(['_token', 'files']),
+            'files' => $storedFiles,
+            'status' => 'pending',
         ]);
     
-        return redirect()
-            ->back()
-            ->with('success', 'Pengajuan berhasil dikirim.');
+        return back()->with('success', 'Pengajuan berhasil dikirim.');
     }
 
     // ========================
