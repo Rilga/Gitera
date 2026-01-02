@@ -72,7 +72,7 @@ class LayananPersuratanController extends Controller
                     'size' => $file->getSize(),
                     'mime' => $file->getClientMimeType(),
                 ];
-            }
+            } 
         }
 
         $formData = $request->except(['_token', 'files']);
