@@ -289,7 +289,7 @@
 
     <script>
     document.getElementById('submitBtn').addEventListener('click', async function () {
-        const form = document.getElementById('pengajuanForm');
+
         const files = document.getElementById('fileInput').files;
         let uploaded = [];
 
@@ -299,16 +299,11 @@
             fd.append('upload_preset', 'pengajuan_unsigned');
 
             const res = await fetch(
-                'https://api.cloudinary.com/v1_1/dnzeydwvq/auto/upload',
+                'https://api.cloudinary.com/v1_1/CLOUD_NAME/auto/upload',
                 { method: 'POST', body: fd }
             );
 
             const data = await res.json();
-
-            if (!data.secure_url) {
-                alert('Upload gagal');
-                return;
-            }
 
             uploaded.push({
                 url: data.secure_url,
@@ -318,10 +313,34 @@
             });
         }
 
-        document.getElementById('filesData').value = JSON.stringify(uploaded);
+        // 🔥 KIRIM KE BACKEND VIA AJAX
+        const payload = {
+            nama: document.querySelector('[name=nama]').value,
+            nik: document.querySelector('[name=nik]').value,
+            ttl: document.querySelector('[name=ttl]').value,
+            alamat: document.querySelector('[name=alamat]').value,
+            pekerjaan: document.querySelector('[name=pekerjaan]').value,
+            status: document.querySelector('[name=status]').value,
+            agama: document.querySelector('[name=agama]').value,
+            kewarganegaraan: document.querySelector('[name=kewarganegaraan]').value,
+            keperluan: document.querySelector('[name=keperluan]').value,
+            files: uploaded
+        };
 
-        // 🔥 BARU SUBMIT
-        form.submit();
+        const res = await fetch("{{ route('layanan.store', $slug) }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            window.location.href = "{{ route('user.riwayat') }}";
+        } else {
+            alert("Gagal mengirim pengajuan");
+        }
     });
     </script>
 

@@ -98,28 +98,24 @@ class LayananPersuratanController extends Controller
 
     public function store(Request $request, $slug)
     {
-        if (!array_key_exists($slug, $this->layananList)) {
-            abort(404);
-        }
-
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'files' => 'nullable|string', // JSON
+        $data = $request->validate([
+            'nama' => 'required',
+            'nik' => 'required',
+            'files' => 'nullable|array'
         ]);
-
-        $files = $request->files ? json_decode($request->files, true) : [];
 
         PengajuanSurat::create([
             'user_id' => auth()->id(),
             'slug' => $slug,
             'title' => $this->layananList[$slug],
-            'data' => $request->except(['_token', 'files']),
-            'files' => $files,
-            'status' => 'pending',
+            'data' => $request->except('files'),
+            'files' => $data['files'],
+            'status' => 'pending'
         ]);
 
-        return back()->with('success', 'Pengajuan berhasil dikirim.');
+        return response()->json(['success' => true]);
     }
+
 
 
     public function downloadPdf($id)
