@@ -6,7 +6,7 @@
         <div class="hidden lg:flex lg:w-1/2 bg-[#1da746] flex-col justify-center px-12 relative text-white overflow-hidden">
             <!-- Background Image -->
             <div class="absolute inset-0 z-0">
-                <img src="{{ asset('images/asset/Login.png') }}" 
+                <img src="{{ asset('asset/Login.png') }}" 
                     alt="Ilustrasi Background" 
                     class="w-full h-full object-cover object-center opacity-45 mix-blend-multiply">
                 <div class="absolute inset-0 bg-gradient-to-b from-[#188D3C]/80 to-[#188D3C]/30"></div>
@@ -14,7 +14,7 @@
 
             <!-- Logo -->
             <div class="absolute top-8 left-8 z-20 flex items-center gap-3">
-                <img src="{{ asset('images/asset/logo-white.png') }}" alt="Logo SimpelBS" class="w-10 h-10 object-contain ml-5">
+                <img src="{{ asset('asset/logo-white.png') }}" alt="Logo SimpelBS" class="w-10 h-10 object-contain ml-5">
                 <span class="text-2xl font-bold tracking-wide">SimpelBS</span>
             </div>
 

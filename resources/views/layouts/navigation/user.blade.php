@@ -6,7 +6,7 @@
             <div class="flex items-center">
                 <a href="{{ route('user.dashboard') }}" class="flex items-center gap-3 group">
                     <!-- Logo Image (Ganti dengan aset logo asli Anda) -->
-                    <img src="{{ asset('images/asset/logo-coloured.png') }}" alt="Logo" class="h-10 w-auto object-contain">
+                    <img src="{{ asset('asset/logo-coloured.png') }}" alt="Logo" class="h-10 w-auto object-contain">
                     
                     <!-- Brand Text -->
                     <div class="flex flex-col">

@@ -8,7 +8,7 @@
             <!-- Background Image Layer (Full Cover) -->
             <!-- PERBAIKAN DISINI: Menggunakan inset-0 agar gambar memenuhi seluruh area div hijau -->
             <div class="absolute inset-0 z-0">
-                <img src="{{ asset('images/asset/Login.png') }}" 
+                <img src="{{ asset('asset/Login.png') }}" 
                     alt="Ilustrasi Background" 
                     class="w-full h-full object-cover object-center opacity-45 mix-blend-multiply">
                 <!-- Overlay gradient agar teks tetap terbaca jelas di atas gambar -->
@@ -17,7 +17,7 @@
 
             <!-- Logo SuratKu (Pojok Kiri Atas) -->
             <div class="absolute top-8 left-8 z-20 flex items-center gap-3">
-                <img src="{{ asset('images/asset/logo-white.png') }}" alt="Logo SimpelBS" class="w-10 h-10 object-contain ml-5">
+                <img src="{{ asset('asset/logo-white.png') }}" alt="Logo SimpelBS" class="w-10 h-10 object-contain ml-5">
                 <span class="text-2xl font-bold tracking-wide">SimpelBS</span>
             </div>
             <!-- Konten Teks Tengah -->

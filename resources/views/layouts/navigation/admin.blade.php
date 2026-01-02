@@ -6,7 +6,7 @@
         <div class="flex items-center px-6 h-20 border-b border-gray-50">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
                 <!-- Logo Icon -->
-                <img src="{{ asset('images/asset/Logo-coloured.png') }}" 
+                <img src="{{ asset('asset/Logo-coloured.png') }}" 
                     alt="Ilustrasi Background" 
                     class="w-8 h-9 object-cover object-centermix-blend-multiply">
                 <span class="font-bold text-xl text-gray-900 tracking-tight">SimpelBS</span>
@@ -96,7 +96,7 @@
 <!-- Mobile Header & Hamburger (Hanya muncul di layar kecil) -->
 <div class="lg:hidden fixed top-0 left-0 w-full bg-white border-b border-gray-200 z-40 h-16 flex items-center justify-between px-4">
     <div class="flex items-center gap-2">
-        <img src="{{ asset('images/asset/Logo-coloured.png') }}" 
+        <img src="{{ asset('asset/Logo-coloured.png') }}" 
             alt="Ilustrasi Background" 
             class="w-8 h-9 object-cover object-centermix-blend-multiply">
         <span class="font-bold text-lg text-gray-900">SimpelBS</span>

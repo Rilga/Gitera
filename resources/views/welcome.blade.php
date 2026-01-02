@@ -28,7 +28,7 @@
                     <!-- Logo -->
                     <div class="flex-shrink-0 flex items-center gap-3">
                         <!-- Icon Logo (Simulasi Logo di Gambar) -->
-                        <img src="{{ asset('images/asset/logo-coloured.png') }}" alt="Logo SimpelBS" class="w-12 h-12 object-contain">
+                        <img src="{{ asset('asset/logo-coloured.png') }}" alt="Logo SimpelBS" class="w-12 h-12 object-contain">
                         <div class="leading-tight">
                             <span class="font-bold text-xl text-gray-900 block">SimpelBS</span>
                             <span class="text-[10px] text-gray-500 uppercase tracking-wider font-medium pl-0.5">Sistem Pelayanan Banjarsari</span>
@@ -62,7 +62,7 @@
             <!-- Background Image Layer (Right Side) -->
             <div class="absolute top-0 right-0 w-3/4 h-full z-0">
                 <!-- Gambar Pelayanan Desa -->
-                <img src="{{ asset('images/asset/LandingPage1.png') }}" 
+                <img src="{{ asset('asset/LandingPage1.png') }}" 
                      alt="Background Pelayanan" 
                      class="w-full h-full object-cover hero-fade-mask opacity-70">
             </div>
@@ -141,7 +141,7 @@
                      <div class="order-2 lg:order-1 relative">
                         <div class="relative rounded-3xl overflow-hidden shadow-2xl">
                              <!-- Ganti dengan gambar orang pakai tablet/kiosk -->
-                            <img src="{{ asset('images/asset/LandingPage2.png') }}" alt="Digital Platform" class="w-full h-full object-cover">
+                            <img src="{{ asset('asset/LandingPage2.png') }}" alt="Digital Platform" class="w-full h-full object-cover">
                         </div>
                         <!-- Green Box Decoration -->
                         <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-green-400 rounded-2xl -z-10"></div>
@@ -390,7 +390,7 @@
                         <div class="flex items-center gap-3">
                              <!-- Ikon Logo Putih -->
                              <!-- Saya menggunakan fa-paper-plane sebagai placeholder logo, bisa diganti img -->
-                             <img src="{{ asset('images/asset/Logo-white.png') }}" 
+                             <img src="{{ asset('asset/Logo-white.png') }}" 
                                 alt="Logo SimpelBS" 
                                 class="h-10 w-auto object-contain">
                              <span class="font-bold text-3xl tracking-tight">SimpelBS</span>
