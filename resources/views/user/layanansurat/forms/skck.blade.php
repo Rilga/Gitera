@@ -173,7 +173,7 @@
 
                             <!-- multiple -->
                             {{-- <input id="file-input" type="file" name="files[]" multiple class="hidden"> --}}
-                            <input type="file" name="files[]" multiple>
+                            <input id="fileInput" type="file" multiple class="hidden"/>
                             <input type="hidden" name="files_json" id="files_json">
                         </label>
                     </div>
@@ -267,59 +267,60 @@
     </div>
     @endif
 
-    <!-- JS PREVIEW FILE -->
     <script>
-    const input = document.getElementById("fileInput");
-    const preview = document.getElementById("file-preview");
-    let allFiles = [];
+    const form = document.getElementById('pengajuanForm');
+    const fileInput = document.getElementById('fileInput');
+    const filesJsonInput = document.getElementById('files_json');
 
-    input.addEventListener("change", function () {
-        allFiles = [...allFiles, ...Array.from(input.files)];
-
-        preview.innerHTML = "";
-        allFiles.forEach((file, i) => {
-            preview.innerHTML += `<div class="text-sm">${i+1}. ${file.name}</div>`;
-        });
-
-        const dt = new DataTransfer();
-        allFiles.forEach(f => dt.items.add(f));
-        input.files = dt.files;
-    });
-    </script>
-
-    <script>
-    async function uploadFilesToCloudinary(files) {
+    async function uploadToCloudinary(files) {
         const uploaded = [];
 
         for (let file of files) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', 'pengajuan_unsigned');
+            const fd = new FormData();
+            fd.append('file', file);
+            fd.append('upload_preset', 'pengajuan_unsigned');
 
-            const res = await fetch('https://api.cloudinary.com/v1_1/dnzeydwvq/upload', {
-                method: 'POST',
-                body: formData
-            });
+            const res = await fetch(
+                'https://api.cloudinary.com/v1_1/dnzeydwvq/auto/upload',
+                { method: 'POST', body: fd }
+            );
+
+            if (!res.ok) {
+                throw new Error('Upload gagal');
+            }
 
             const data = await res.json();
+
             uploaded.push({
                 url: data.secure_url,
-                public_id: data.public_id
+                public_id: data.public_id,
+                name: file.name,
+                type: file.type,
+                size: file.size
             });
         }
 
         return uploaded;
     }
 
-    document.querySelector('form').addEventListener('submit', async function (e) {
+    form.addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const files = document.querySelector('input[type=file]').files;
-        const uploaded = await uploadFilesToCloudinary(files);
+        try {
+            const files = fileInput.files;
+            let uploadedFiles = [];
 
-        document.getElementById('files_json').value = JSON.stringify(uploaded);
+            if (files.length > 0) {
+                uploadedFiles = await uploadToCloudinary(files);
+            }
 
-        this.submit();
+            filesJsonInput.value = JSON.stringify(uploadedFiles);
+
+            form.submit(); // submit FINAL ke Laravel
+        } catch (err) {
+            alert('Upload file gagal. Coba ulangi.');
+            console.error(err);
+        }
     });
     </script>
 
