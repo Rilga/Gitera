@@ -102,8 +102,15 @@ class LayananPersuratanController extends Controller
             abort(404);
         }
 
+        if (!auth()->check()) {
+            abort(401);
+        }
+
         $request->validate([
             'nama' => 'required|string|max:255',
+            'nik' => 'required|string',
+            'alamat' => 'required|string',
+            'keperluan' => 'required|string',
             'files_json' => 'nullable|string',
         ]);
 
@@ -112,16 +119,14 @@ class LayananPersuratanController extends Controller
             'slug' => $slug,
             'title' => $this->layananList[$slug],
             'data' => $request->except(['_token', 'files_json']),
-            'files' => $request->files_json 
-                ? json_decode($request->files_json, true) 
+            'files' => $request->files_json
+                ? json_decode($request->files_json, true)
                 : [],
             'status' => 'pending',
         ]);
 
         return back()->with('success', 'Pengajuan berhasil dikirim.');
     }
-
-
 
 
     public function downloadPdf($id)

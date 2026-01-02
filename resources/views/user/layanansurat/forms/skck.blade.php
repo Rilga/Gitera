@@ -173,7 +173,7 @@
 
                             <!-- multiple -->
                             {{-- <input id="file-input" type="file" name="files[]" multiple class="hidden"> --}}
-                            <input id="fileInput" type="file" multiple class="hidden"/>
+                            <input id="fileInput" type="file" name="files[]" multiple class="hidden"/>
                             <input type="hidden" name="files_json" id="files_json">
                         </label>
                     </div>
@@ -268,60 +268,68 @@
     @endif
 
     <script>
-    const form = document.getElementById('pengajuanForm');
-    const fileInput = document.getElementById('fileInput');
-    const filesJsonInput = document.getElementById('files_json');
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('pengajuanForm');
+        const fileInput = document.getElementById('fileInput');
+        const filesJsonInput = document.getElementById('files_json');
 
-    async function uploadToCloudinary(files) {
-        const uploaded = [];
+        async function uploadToCloudinary(files) {
+            const uploaded = [];
 
-        for (let file of files) {
-            const fd = new FormData();
-            fd.append('file', file);
-            fd.append('upload_preset', 'pengajuan_unsigned');
+            for (const file of files) {
+                const fd = new FormData();
+                fd.append('file', file);
+                fd.append('upload_preset', 'pengajuan_unsigned');
 
-            const res = await fetch(
-                'https://api.cloudinary.com/v1_1/dnzeydwvq/auto/upload',
-                { method: 'POST', body: fd }
-            );
+                const res = await fetch(
+                    'https://api.cloudinary.com/v1_1/dnzeydwvq/auto/upload',
+                    {
+                        method: 'POST',
+                        body: fd,
+                    }
+                );
 
-            if (!res.ok) {
-                throw new Error('Upload gagal');
+                if (!res.ok) {
+                    throw new Error('Cloudinary upload failed');
+                }
+
+                const data = await res.json();
+
+                uploaded.push({
+                    url: data.secure_url,
+                    public_id: data.public_id,
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                });
             }
 
-            const data = await res.json();
-
-            uploaded.push({
-                url: data.secure_url,
-                public_id: data.public_id,
-                name: file.name,
-                type: file.type,
-                size: file.size
-            });
+            return uploaded;
         }
 
-        return uploaded;
-    }
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-    form.addEventListener('submit', async function (e) {
-        e.preventDefault();
+            try {
+                const files = fileInput.files;
+                let uploadedFiles = [];
 
-        try {
-            const files = fileInput.files;
-            let uploadedFiles = [];
+                if (files.length > 0) {
+                    uploadedFiles = await uploadToCloudinary(files);
+                }
 
-            if (files.length > 0) {
-                uploadedFiles = await uploadToCloudinary(files);
+                filesJsonInput.value = JSON.stringify(uploadedFiles);
+
+                // SUBMIT FINAL (AMAN DI CHROME + VERCEL)
+                HTMLFormElement.prototype.submit.call(form);
+
+            } catch (error) {
+                console.error(error);
+                alert('Gagal upload file. Silakan coba lagi.');
             }
-
-            filesJsonInput.value = JSON.stringify(uploadedFiles);
-
-            form.submit(); // submit FINAL ke Laravel
-        } catch (err) {
-            alert('Upload file gagal. Coba ulangi.');
-            console.error(err);
-        }
+        });
     });
     </script>
+
 
 </x-app-layout>
