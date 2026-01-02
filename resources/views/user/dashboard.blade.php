@@ -10,7 +10,7 @@
                 <!-- Background Image Overlay (Right Side) -->
                 <div class="absolute top-0 right-0 w-2/5 h-full hidden md:block">
                     <!-- Ganti URL ini dengan gambar petugas desa/kantor yang sesuai -->
-                    <img src="{{ asset('images/asset/LandingPage1.png') }}" 
+                    <img src="{{ asset('asset/LandingPage1.png') }}" 
                         alt="Petugas Desa" 
                         class="w-full h-full object-cover object-center mix-blend-multiply opacity-50 filter grayscale ">
                     <!-- Gradient Overlay -->
