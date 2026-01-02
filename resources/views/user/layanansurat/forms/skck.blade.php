@@ -156,7 +156,7 @@
                     <div id="file-preview" class="mb-3 space-y-1"></div>
 
                     <div class="flex items-center justify-center w-full">
-                        <label for="file-input"
+                        <label for="fileInput"
                             class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
 
                             <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -188,7 +188,7 @@
                         Kembali
                     </a>
 
-                    <button type="submit" id="submitBtn" class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-8 py-3 inline-flex items-center shadow-lg shadow-green-200">
+                    <button type="button" id="submitBtn" class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-8 py-3 inline-flex items-center shadow-lg shadow-green-200">
                         Kirim Pengajuan
                         <svg class="w-3.5 h-3.5 ms-2" fill="none" viewBox="0 0 14 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
