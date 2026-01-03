@@ -183,7 +183,7 @@
 
                             <!-- multiple -->
                             {{-- <input id="file-input" type="file" name="files[]" multiple class="hidden"> --}}
-                            <input id="fileInput" type="file" multiple class="hidden"/>
+                            <input id="fileInput" type="file" multiple class="hidden" form="fakeForm"/>
                             <input type="hidden" name="files_json" id="files_json">
                         </label>
                     </div>
