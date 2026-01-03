@@ -37,12 +37,6 @@
                 </div>
             @endif
 
-            <form id="fakeForm" enctype="multipart/form-data">
-                <input id="fileInput" type="file" multiple class="hidden" form="fakeForm"/>
-                            <input type="hidden" name="files_json" id="files_json">
-            </form>
-
-
             <form id="pengajuanForm" action="{{ route('layanan.store', $slug) }}" method="POST">
                 @csrf
 
@@ -189,7 +183,8 @@
 
                             <!-- multiple -->
                             {{-- <input id="file-input" type="file" name="files[]" multiple class="hidden"> --}}
-                            
+                            <input id="fileInput" type="file" multiple class="hidden" disabled />
+                            <input type="hidden" name="files_json" id="files_json">
                         </label>
                     </div>
                 </div>
