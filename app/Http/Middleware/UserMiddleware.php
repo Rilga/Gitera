@@ -16,9 +16,16 @@ class UserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->role == 'user' && Auth::user()->status == 'approved') {
-            return $next($request);
+        if (!Auth::check()) {
+            abort(401, 'Unauthenticated');
         }
-        return redirect()->back();
+
+        $user = Auth::user();
+
+        if ($user->role !== 'user' || $user->status !== 'approved') {
+            abort(403, 'Forbidden');
+        }
+
+        return $next($request);
     }
 }   
