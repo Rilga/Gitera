@@ -4,16 +4,7 @@
     "functions": {
         "api/index.php": { "runtime": "vercel-php@0.7.2" }
     },
-    "rewrites": [
-        {
-            "source": "/favicon.ico",
-            "destination": "/favicon.ico"
-        },
-        {
-            "source": "/(.*)",
-            "destination": "/index.php"
-        }
-    ],
+    
     "routes": [
         { "src": "/asset/(.*)", "dest": "/public/asset/$1" },
         { "src": "/build/(.*)", "dest": "/public/build/" },
